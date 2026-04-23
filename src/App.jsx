@@ -191,19 +191,22 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 
 /* ── DATA ─────────────────────────────────────────────────── */
 const REGIONS = [
-  {id:1, name:"Riau",        mx:195,my:205, area:4044000, risk:82, hs:47, depth:2, status:"degraded"},
-  {id:2, name:"Kalteng",     mx:370,my:230, area:3010000, risk:68, hs:31, depth:3, status:"degraded"},
-  {id:3, name:"Kalbar",      mx:325,my:215, area:1729000, risk:55, hs:18, depth:2, status:"degraded"},
-  {id:4, name:"Papua Barat", mx:580,my:238, area:6090000, risk:21, hs:3,  depth:3, status:"intact"},
-  {id:5, name:"Jambi",       mx:212,my:222, area:717000,  risk:71, hs:22, depth:2, status:"degraded"},
-  {id:6, name:"Sumsel",      mx:223,my:240, area:1408000, risk:77, hs:38, depth:2, status:"degraded"},
-  {id:7, name:"Kalsel",      mx:388,my:252, area:186000,  risk:44, hs:9,  depth:1, status:"restored"},
-  {id:8, name:"Kaltim",      mx:408,my:205, area:209000,  risk:38, hs:6,  depth:2, status:"intact"},
-  {id:9, name:"Aceh",        mx:175,my:178, area:290000,  risk:32, hs:4,  depth:2, status:"intact"},
-  {id:10,name:"Papua Tgh",   mx:610,my:258, area:5200000, risk:18, hs:1,  depth:3, status:"intact"},
-  {id:11,name:"Sumut",       mx:185,my:188, area:250000,  risk:48, hs:11, depth:2, status:"degraded"},
-  {id:12,name:"Bengkulu",    mx:200,my:235, area:123000,  risk:41, hs:7,  depth:1, status:"restored"},
-];
+  {id:1, name:"Riau",        lng:102.0, lat:0.5,   area:4044000, risk:82, hs:47, depth:2, status:"degraded"},
+  {id:2, name:"Kalteng",     lng:113.9, lat:-1.7,  area:3010000, risk:68, hs:31, depth:3, status:"degraded"},
+  {id:3, name:"Kalbar",      lng:110.3, lat:0.0,   area:1729000, risk:55, hs:18, depth:2, status:"degraded"},
+  {id:4, name:"Papua Barat", lng:133.0, lat:-3.5,  area:6090000, risk:21, hs:3,  depth:3, status:"intact"},
+  {id:5, name:"Jambi",       lng:103.6, lat:-1.6,  area:717000,  risk:71, hs:22, depth:2, status:"degraded"},
+  {id:6, name:"Sumsel",      lng:104.5, lat:-3.3,  area:1408000, risk:77, hs:38, depth:2, status:"degraded"},
+  {id:7, name:"Kalsel",      lng:115.4, lat:-2.5,  area:186000,  risk:44, hs:9,  depth:1, status:"restored"},
+  {id:8, name:"Kaltim",      lng:117.2, lat:0.5,   area:209000,  risk:38, hs:6,  depth:2, status:"intact"},
+  {id:9, name:"Aceh",        lng:96.5,  lat:4.5,   area:290000,  risk:32, hs:4,  depth:2, status:"intact"},
+  {id:10,name:"Papua Tgh",   lng:137.0, lat:-4.0,  area:5200000, risk:18, hs:1,  depth:3, status:"intact"},
+  {id:11,name:"Sumut",       lng:99.5,  lat:2.1,   area:250000,  risk:48, hs:11, depth:2, status:"degraded"},
+  {id:12,name:"Bengkulu",    lng:102.2, lat:-3.8,  area:123000,  risk:41, hs:7,  depth:1, status:"restored"},
+].map(r=>({...r,
+  mx: (r.lng-94)/(142-94)*720,
+  my: (6-r.lat)/(6+11)*360,
+}));
 
 function useHotspots() {
   const [hotspots, setHotspots] = useState([]);
@@ -312,7 +315,7 @@ const totalHotspotsReal = hotspots.length;
       </div>
 
       <div className="hero-svg-wrap" ref={svgRef}>
-        <svg className="hero-svg" viewBox="0 0 720 360" preserveAspectRatio="xMidYMid slice">
+        <svg className="hero-svg" viewBox="0 0 720 420" preserveAspectRatio="xMidYMid slice">
           <defs>
             <radialGradient id="mapbg" cx="50%" cy="50%" r="70%">
               <stop offset="0%" stopColor="#081510"/>
@@ -346,7 +349,7 @@ const totalHotspotsReal = hotspots.length;
             const coords = geo.geometry.type === 'MultiPolygon' ? polygon[0] : polygon;
             const d = coords.map((c, j) => {
               const x = (c[0] - 94) / (142 - 94) * 720;
-              const y = (6 - c[1]) / (6 + 11) * 360;
+              const y = (6 - c[1]) / (6 + 11) * 420;
               return `${j === 0 ? 'M' : 'L'}${x},${y}`;
             }).join(' ') + ' Z';
             return <path key={i} d={d} fill={`${C.accentDim}35`} stroke={`${C.accent}55`} strokeWidth="1"/>;
@@ -356,7 +359,7 @@ const totalHotspotsReal = hotspots.length;
           {hotspots.map((h,i)=>(
             <circle key={i}
               cx={(h.lng-94)/(142-94)*720}
-              cy={(6-h.lat)/(6+11)*360}
+              cy={(6-h.lat)/(6+11)*420}
               r="3" fill="#f97316" opacity=".7"
               style={{pointerEvents:"none"}}
             />
