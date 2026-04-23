@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-
+const FIRMS_API_KEY = import.meta.env.VITE_FIRMS_KEY;
+const FIRMS_URL = `/api/firms`;
 /* ── PALETTE ─────────────────────────────────────────────── */
 const C = {
   bg:"#060d09", surface:"#0b1710", card:"#0f1e13", border:"#1b3324",
@@ -204,6 +205,23 @@ const REGIONS = [
   {id:12,name:"Bengkulu",    mx:200,my:235, area:123000,  risk:41, hs:7,  depth:1, status:"restored"},
 ];
 
+function useHotspots() {
+  const [hotspots, setHotspots] = useState([]);
+  useEffect(() => {
+    fetch(FIRMS_URL)
+      .then(r => r.text())
+      .then(csv => {
+        const lines = csv.trim().split("\n").slice(1);
+        const pts = lines.map(l => {
+          const cols = l.split(",");
+          return { lat: +cols[0], lng: +cols[1], brightness: +cols[2] };
+        }).filter(p => p.lat && p.lng);
+        setHotspots(pts);
+      })
+      .catch(e => console.error("FIRMS fetch error:", e));
+  }, []);
+  return hotspots;
+}
 const CANALS = ["KHG-01","KHG-02","KHG-03","KHG-04"];
 const SEG = {
   healthy:{color:"#166534",label:"Sehat"},
@@ -245,7 +263,7 @@ const PATHS = [
 ];
 
 /* ── MAP HERO COMPONENT ──────────────────────────────────── */
-function MapHero({regions, onHover, popup, svgRef}){
+function MapHero({regions, hotspots, onHover, popup, svgRef}){
   const totalHs = regions.reduce((s,r)=>s+r.hs,0);
   return(
     <section className="hero">
@@ -298,6 +316,15 @@ function MapHero({regions, onHover, popup, svgRef}){
             <path key={i} d={d} fill={`${C.accentDim}18`} stroke={C.border} strokeWidth=".8"/>
           ))}
 
+{/* hotspot riil NASA FIRMS */}
+          {hotspots.map((h,i)=>(
+            <circle key={i}
+              cx={(h.lng-94)/(142-94)*720}
+              cy={(6-h.lat)/(6+11)*360}
+              r="3" fill="#f97316" opacity=".7"
+              style={{pointerEvents:"none"}}
+            />
+          ))}
           {/* markers */}
           {regions.map(r=>{
             const col = rc(r.risk);
@@ -753,6 +780,7 @@ const TABS = [
 export default function App(){
   const [tab,setTab]=useState("warn");
   const [regions,setRegions]=useState(REGIONS.map(r=>({...r})));
+  const hotspots = useHotspots();
   const [popup,setPopup]=useState(null);
   const svgRef=useRef();
 
@@ -778,6 +806,7 @@ export default function App(){
       {/* full-viewport map */}
       <MapHero
         regions={regions}
+        hotspots={hotspots}
         onHover={r=>setPopup(r?{r}:null)}
         popup={popup}
         svgRef={svgRef}
