@@ -446,6 +446,7 @@ const totalHotspotsReal = hotspots.length;
 /* ── TAB: EARLY WARNING ───────────────────────────────────── */
 function EarlyWarning(){
   const cuaca = useBMKG();
+  const hotspots = useHotspots();
   const [hist,setHist]=useState(()=>Array.from({length:24},(_,i)=>({
     h:i,rain:60+Math.sin(i*.4)*40+Math.random()*20,
     temp:32+Math.sin(i*.3)*5,hum:55+Math.cos(i*.35)*20,
@@ -466,15 +467,21 @@ function EarlyWarning(){
 
   const lat=hist[hist.length-1];
   const rv=Math.round(lat.risk);
-  const lv=rv<40?"safe":rv<70?"warn":"dang";
-  const msg=rv<40?"✓  Kondisi aman — TMAT dalam batas normal"
-            :rv<70?"⚠  Waspada — Kirim notifikasi ke Manggala Agni"
+  const riskReal = cuaca && hotspots.length > 0 ? Math.min(98, Math.round(
+    (Math.max(0, cuaca.suhu - 25) / 15 * 100 * 0.40) +
+    (Math.max(0, 100 - cuaca.kelembapan) * 0.35) +
+    (Math.min(100, hotspots.length / 3) * 0.25)
+  )) : null;
+  const rvFinal = riskReal !== null ? riskReal : rv;
+  const lv=rvFinal<40?"safe":rvFinal<70?"warn":"dang";
+  const msg=rvFinal<40?"✓  Kondisi aman — TMAT dalam batas normal"
+            :rvFinal<70?"⚠  Waspada — Kirim notifikasi ke Manggala Agni"
             :"🔴  SIAGA — Aktivasi protokol darurat karhutla!";
   const W=500,H=110;
   const pts=hist.map((d,i)=>[(i/(hist.length-1))*W,H-(d.risk/100)*H]);
   const path=pts.map((p,i)=>`${i===0?"M":"L"}${p[0]},${p[1]}`).join(" ");
   const area=path+` L${W},${H} L0,${H} Z`;
-  const col=rc(rv);
+  const col=rc(rvFinal);
 
   return(
     <div className="content fade">
@@ -498,7 +505,7 @@ function EarlyWarning(){
         <div style={{display:"flex",alignItems:"center",gap:18,marginBottom:12}}>
           <div>
             <div style={{fontSize:11,color:C.muted}}>Skor Risiko</div>
-            <div style={{fontFamily:"'Space Mono',monospace",fontSize:36,fontWeight:700,color:col}}>{rv}%</div>
+            <div style={{fontFamily:"'Space Mono',monospace",fontSize:36,fontWeight:700,color:col}}>{rvFinal}%</div>
           </div>
           <div style={{flex:1}}>
             {[["Suhu",lat.temp/40*100],["Kelembapan",lat.hum],["Curah Hujan",lat.rain/150*100]].map(([l,v])=>(
@@ -534,7 +541,7 @@ function EarlyWarning(){
       <div className="card">
         <div className="ctitle">📋 Log Aktivitas</div>
         <div className="tl">
-          {[{c:C.accent,t:"Baru saja",m:`Prediksi diperbarui → Risiko ${rv}%`},
+          {[{c:C.accent,t:"Baru saja",m:`Prediksi diperbarui → Risiko ${rvFinal}%`},
             {c:rv>70?C.warn:C.muted,t:"2 mnt lalu",m:"Sensor TMAT KHG-Kalteng diterima"},
             {c:C.muted,t:"8 mnt lalu",m:"Data cuaca BMKG disinkronkan"},
             {c:C.muted,t:"15 mnt lalu",m:"Sensor fusion — 3 sumber diverifikasi"},
