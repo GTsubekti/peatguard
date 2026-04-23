@@ -265,6 +265,7 @@ const PATHS = [
 /* ── MAP HERO COMPONENT ──────────────────────────────────── */
 function MapHero({regions, hotspots, onHover, popup, svgRef}){
   const totalHs = regions.reduce((s,r)=>s+r.hs,0);
+const totalHotspotsReal = hotspots.length;
   return(
     <section className="hero">
       <div className="map-title">
