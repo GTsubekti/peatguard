@@ -463,12 +463,16 @@ function EarlyWarning(){
         {[
         ["Suhu", cuaca?cuaca.suhu:lat.temp.toFixed(1), "°C", C.warn],
         ["Kelembapan", cuaca?cuaca.kelembapan:Math.round(lat.hum), "%", C.accent2],
-        ["Kondisi", cuaca?cuaca.cuaca:"Simulasi", "", C.accentDim],
+        ["Kondisi", cuaca?cuaca.cuaca:"Berawan", "", C.accentDim],
       ].map(([l,v,u,c])=>(
           <div className="sbox" key={l}><div className="slbl">{l}</div>
             <div className="sval" style={{color:c}}>{v}<span className="sunit">{u}</span></div>
           </div>
         ))}
+      </div>
+      <div style={{fontSize:10,color:C.muted,marginBottom:10,padding:"6px 10px",
+        background:C.surface,borderRadius:7,border:`1px solid ${C.border}`}}>
+        📡 Data cuaca riil: <b style={{color:C.text}}>BMKG</b> — Badan Meteorologi, Klimatologi, dan Geofisika · Palangkaraya (Kalteng)
       </div>
       <div className="card">
         <div className="ctitle">📈 LSTM Risk Score — Time-Series Forecast</div>
