@@ -222,6 +222,25 @@ function useHotspots() {
   }, []);
   return hotspots;
 }
+function useBMKG() {
+  const [cuaca, setCuaca] = useState(null);
+  useEffect(() => {
+    fetch('/api/bmkg')
+      .then(r => r.json())
+      .then(data => {
+        const item = data.data?.[0]?.cuaca?.[0]?.[0];
+        if (item) setCuaca({
+          suhu: item.t,
+          kelembapan: item.hu,
+          cuaca: item.weather_desc,
+          angin: item.ws,
+          waktu: item.local_datetime,
+        });
+      })
+      .catch(e => console.error("BMKG error:", e));
+  }, []);
+  return cuaca;
+}
 const CANALS = ["KHG-01","KHG-02","KHG-03","KHG-04"];
 const SEG = {
   healthy:{color:"#166534",label:"Sehat"},
@@ -407,6 +426,7 @@ const totalHotspotsReal = hotspots.length;
 
 /* ── TAB: EARLY WARNING ───────────────────────────────────── */
 function EarlyWarning(){
+  const cuaca = useBMKG();
   const [hist,setHist]=useState(()=>Array.from({length:24},(_,i)=>({
     h:i,rain:60+Math.sin(i*.4)*40+Math.random()*20,
     temp:32+Math.sin(i*.3)*5,hum:55+Math.cos(i*.35)*20,
@@ -440,7 +460,11 @@ function EarlyWarning(){
   return(
     <div className="content fade">
       <div className="g3">
-        {[["Suhu",lat.temp.toFixed(1),"°C",C.warn],["Kelembapan",Math.round(lat.hum),"%",C.accent2],["Curah Hujan",Math.round(lat.rain),"mm",C.accentDim]].map(([l,v,u,c])=>(
+        {[
+        ["Suhu", cuaca?cuaca.suhu:lat.temp.toFixed(1), "°C", C.warn],
+        ["Kelembapan", cuaca?cuaca.kelembapan:Math.round(lat.hum), "%", C.accent2],
+        ["Kondisi", cuaca?cuaca.cuaca:"Simulasi", "", C.accentDim],
+      ].map(([l,v,u,c])=>(
           <div className="sbox" key={l}><div className="slbl">{l}</div>
             <div className="sval" style={{color:c}}>{v}<span className="sunit">{u}</span></div>
           </div>
