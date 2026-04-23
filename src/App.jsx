@@ -204,8 +204,8 @@ const REGIONS = [
   {id:11,name:"Sumut",       lng:99.5,  lat:2.1,   area:250000,  risk:48, hs:11, depth:2, status:"degraded"},
   {id:12,name:"Bengkulu",    lng:102.2, lat:-3.8,  area:123000,  risk:41, hs:7,  depth:1, status:"restored"},
 ].map(r=>({...r,
-  mx: (r.lng-94)/(142-94)*720,
-  my: (6-r.lat)/(6+11)*360,
+  mx: (r.lng-94)/(142-94)*800,
+  my: (6-r.lat)/(6+11)*340,
 }));
 
 function useHotspots() {
@@ -315,7 +315,7 @@ const totalHotspotsReal = hotspots.length;
       </div>
 
       <div className="hero-svg-wrap" ref={svgRef}>
-        <svg className="hero-svg" viewBox="0 0 720 420" preserveAspectRatio="xMidYMid slice">
+        <svg className="hero-svg" viewBox="0 0 800 340" preserveAspectRatio="xMidYMid slice">
           <defs>
             <radialGradient id="mapbg" cx="50%" cy="50%" r="70%">
               <stop offset="0%" stopColor="#081510"/>
@@ -326,7 +326,7 @@ const totalHotspotsReal = hotspots.length;
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
-          <rect width="720" height="360" fill="url(#mapbg)"/>
+          <rect width="800" height="340" fill="url(#mapbg)"/>
 
           {/* grid */}
           {[100,200,300,400,500,600].map(x=>(
@@ -348,8 +348,8 @@ const totalHotspotsReal = hotspots.length;
           {geo && geo.geometry.coordinates.map((polygon, i) => {
             const coords = geo.geometry.type === 'MultiPolygon' ? polygon[0] : polygon;
             const d = coords.map((c, j) => {
-              const x = (c[0] - 94) / (142 - 94) * 720;
-              const y = (6 - c[1]) / (6 + 11) * 420;
+              const x = (c[0] - 94) / (142 - 94) * 800;
+              const y = (6 - c[1]) / (6 + 11) * 340;
               return `${j === 0 ? 'M' : 'L'}${x},${y}`;
             }).join(' ') + ' Z';
             return <path key={i} d={d} fill={`${C.accentDim}35`} stroke={`${C.accent}55`} strokeWidth="1"/>;
@@ -358,8 +358,8 @@ const totalHotspotsReal = hotspots.length;
 {/* hotspot riil NASA FIRMS */}
           {hotspots.map((h,i)=>(
             <circle key={i}
-              cx={(h.lng-94)/(142-94)*720}
-              cy={(6-h.lat)/(6+11)*420}
+              cx={(h.lng-94)/(142-94)*800}
+              cy={(6-h.lat)/(6+11)*340}
               r="3" fill="#f97316" opacity=".7"
               style={{pointerEvents:"none"}}
             />
