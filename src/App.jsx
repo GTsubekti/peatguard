@@ -382,7 +382,7 @@ function MapHero({regions, hotspots, onHover, popup, svgRef}){
         <div className="map-stats-row">
           {[
             {val:"24.7", unit:"jt ha", lbl:"Total Gambut", color:C.accent2},
-            {val:totalHs, unit:"", lbl:"Hotspot Aktif", color:C.danger},
+            {val:totalHotspotsReal||totalHs, unit:"", lbl:"Hotspot Aktif", color:C.danger},
             {val:"9.8",  unit:"jt ha", lbl:"Terdegradasi", color:C.warn},
             {val:"12",   unit:"titik", lbl:"Lokasi Pantau", color:C.accent},
           ].map((s,i,arr)=>(
@@ -781,6 +781,7 @@ export default function App(){
   const [tab,setTab]=useState("warn");
   const [regions,setRegions]=useState(REGIONS.map(r=>({...r})));
   const hotspots = useHotspots();
+  const totalHotspotsReal = hotspots.length;
   const [popup,setPopup]=useState(null);
   const svgRef=useRef();
 
