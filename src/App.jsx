@@ -20,17 +20,18 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 .hdr{position:fixed;top:0;left:0;right:0;z-index:100;
   background:rgba(6,13,9,.85);backdrop-filter:blur(14px);
   border-bottom:1px solid ${C.border};
-  display:flex;align-items:center;padding:0 20px;height:50px;gap:12px}
-.hdr-logo{font-family:'Space Mono',monospace;font-size:14px;color:${C.accent};font-weight:700;letter-spacing:-.5px}
-.hdr-sub{font-size:13px;color:${C.text};display:none;font-weight:500}
+  display:flex;align-items:center;padding:0 20px;height:100px;gap:12px}
+.hdr-logo{font-family:'Space Mono',monospace;font-size:28px;color:${C.accent};font-weight:700;letter-spacing:-.5px}
+.hdr-sub{font-size:20px;color:${C.text};display:none;font-weight:500}
 @media(min-width:480px){.hdr-sub{display:block}}
-.hdr-right{margin-left:auto;display:flex;align-items:center;gap:6px;
-  font-family:'Space Mono',monospace;font-size:9px;color:${C.accent};letter-spacing:1px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px;
+  font-family:'Space Mono',monospace;font-size:13px;color:${C.accent};letter-spacing:1px}
+.ldot{width:10px;height:10px;border-radius:50%;background:${C.accent};animation:blink 1.4s infinite}
 .ldot{width:6px;height:6px;border-radius:50%;background:${C.accent};animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
 
 /* ─ MAP HERO ─ */
-.hero{position:relative;height:100vh;width:100%;background:${C.bg};overflow:hidden;padding-top:50px}
+.hero{position:relative;height:100vh;width:100%;background:${C.bg};overflow:hidden;padding-top:100px}
 .hero-svg-wrap{width:100%;height:100%;position:relative}
 .hero-svg{width:100%;height:100%;display:block}
 .hero-overlay{position:absolute;inset:0;pointer-events:none;
@@ -45,6 +46,10 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 .mstat-val{font-family:'Space Mono',monospace;font-size:18px;font-weight:700}
 .mstat-lbl{font-size:9px;color:${C.muted};text-transform:uppercase;letter-spacing:1px;margin-top:2px}
 .mstat-div{width:1px;background:${C.border};margin:4px 0;align-self:stretch}
+.map-stats-row{display:flex;justify-content:space-evenly;width:100%}
+.map-credit{text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid ${C.border};width:100%}
+.map-credit-text{font-family:'Space Mono',monospace;font-size:17px;color:${C.accent};font-weight:700;letter-spacing:1px}
+.map-credit-sub{font-size:13px;color:${C.muted};margin-top:4px}
 
 /* title inside map */
 .map-title{position:absolute;top:70px;left:20px;pointer-events:none}
@@ -80,7 +85,7 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 
 /* ─ TAB SECTION ─ */
 .tab-section{background:${C.bg}}
-.tab-nav{position:sticky;top:50px;z-index:90;
+.tab-nav{position:sticky;top:100px;z-index:90;
   background:rgba(6,13,9,.92);backdrop-filter:blur(12px);
   border-bottom:1px solid ${C.border};
   display:flex;padding:0 12px;overflow-x:auto}
@@ -347,20 +352,26 @@ function MapHero({regions, onHover, popup, svgRef}){
 
       {/* stats strip */}
       <div className="map-stats">
-        {[
-          {val:"24.7", unit:"jt ha", lbl:"Total Gambut", color:C.accent2},
-          {val:totalHs, unit:"", lbl:"Hotspot Aktif", color:C.danger},
-          {val:"9.8",  unit:"jt ha", lbl:"Terdegradasi", color:C.warn},
-          {val:"12",   unit:"titik", lbl:"Lokasi Pantau", color:C.accent},
-        ].map((s,i,arr)=>(
-          <>
-            <div className="mstat" key={s.lbl}>
-              <div className="mstat-val" style={{color:s.color}}>{s.val}<span style={{fontSize:11,color:C.muted}}>{s.unit}</span></div>
-              <div className="mstat-lbl">{s.lbl}</div>
-            </div>
-            {i<arr.length-1&&<div className="mstat-div" key={`d${i}`}/>}
-          </>
-        ))}
+        <div className="map-stats-row">
+          {[
+            {val:"24.7", unit:"jt ha", lbl:"Total Gambut", color:C.accent2},
+            {val:totalHs, unit:"", lbl:"Hotspot Aktif", color:C.danger},
+            {val:"9.8",  unit:"jt ha", lbl:"Terdegradasi", color:C.warn},
+            {val:"12",   unit:"titik", lbl:"Lokasi Pantau", color:C.accent},
+          ].map((s,i,arr)=>(
+            <>
+              <div className="mstat" key={s.lbl}>
+                <div className="mstat-val" style={{color:s.color}}>{s.val}<span style={{fontSize:11,color:C.muted}}>{s.unit}</span></div>
+                <div className="mstat-lbl">{s.lbl}</div>
+              </div>
+              {i<arr.length-1&&<div className="mstat-div" key={`d${i}`}/>}
+            </>
+          ))}
+        </div>
+        <div className="map-credit">
+          <div className="map-credit-text">Created by Student Researchers · MAN 5 Kediri</div>
+          <div className="map-credit-sub">PeatGuard - Indonesia Peatland Intelligence Platform · 2026</div>
+        </div>
       </div>
     </section>
   );
