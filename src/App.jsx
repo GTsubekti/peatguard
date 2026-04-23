@@ -241,6 +241,16 @@ function useBMKG() {
   }, []);
   return cuaca;
 }
+function useGeoJSON() {
+  const [geo, setGeo] = useState(null);
+  useEffect(() => {
+    fetch('/api/geojson')
+      .then(r => r.json())
+      .then(data => setGeo(data))
+      .catch(e => console.error("GeoJSON error:", e));
+  }, []);
+  return geo;
+}
 const CANALS = ["KHG-01","KHG-02","KHG-03","KHG-04"];
 const SEG = {
   healthy:{color:"#166534",label:"Sehat"},
@@ -282,7 +292,7 @@ const PATHS = [
 ];
 
 /* ── MAP HERO COMPONENT ──────────────────────────────────── */
-function MapHero({regions, hotspots, onHover, popup, svgRef}){
+function MapHero({regions, hotspots, geo, onHover, popup, svgRef}){
   const totalHs = regions.reduce((s,r)=>s+r.hs,0);
 const totalHotspotsReal = hotspots.length;
   return(
@@ -332,9 +342,15 @@ const totalHotspotsReal = hotspots.length;
           ))}
 
           {/* island outlines */}
-          {PATHS.map((d,i)=>(
-            <path key={i} d={d} fill={`${C.accentDim}18`} stroke={C.border} strokeWidth=".8"/>
-          ))}
+          {geo && geo.geometry.coordinates.map((polygon, i) => {
+            const coords = geo.geometry.type === 'MultiPolygon' ? polygon[0] : polygon;
+            const d = coords.map((c, j) => {
+              const x = (c[0] - 94) / (142 - 94) * 720;
+              const y = (6 - c[1]) / (6 + 11) * 360;
+              return `${j === 0 ? 'M' : 'L'}${x},${y}`;
+            }).join(' ') + ' Z';
+            return <path key={i} d={d} fill={`${C.accentDim}35`} stroke={`${C.accent}55`} strokeWidth="1"/>;
+          })}
 
 {/* hotspot riil NASA FIRMS */}
           {hotspots.map((h,i)=>(
@@ -810,6 +826,7 @@ export default function App(){
   const [tab,setTab]=useState("warn");
   const [regions,setRegions]=useState(REGIONS.map(r=>({...r})));
   const hotspots = useHotspots();
+  const geo = useGeoJSON();
   const totalHotspotsReal = hotspots.length;
   const [popup,setPopup]=useState(null);
   const svgRef=useRef();
@@ -837,6 +854,7 @@ export default function App(){
       <MapHero
         regions={regions}
         hotspots={hotspots}
+        geo={geo}
         onHover={r=>setPopup(r?{r}:null)}
         popup={popup}
         svgRef={svgRef}
