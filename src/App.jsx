@@ -59,7 +59,7 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 .map-title p{font-size:11px;color:${C.muted};margin-top:5px;font-family:'Space Mono',monospace;letter-spacing:1px}
 
 /* map legend */
-.map-legend{position:absolute;top:108px;right:16px;
+.map-legend{position:absolute;top:108px;right:16px;z-index:10;
   background:rgba(6,13,9,.92);border:1px solid ${C.border};border-radius:12px;
   padding:13px 16px;backdrop-filter:blur(10px);pointer-events:none;
   box-shadow:0 4px 24px rgba(0,0,0,.5)}

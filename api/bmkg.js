@@ -7,7 +7,7 @@ const REGIONS_BMKG = [
   { id:6,  name:"Sumsel",      kode:"16.71.01.1001" },
   { id:7,  name:"Kalsel",      kode:"63.71.01.1001" },
   { id:8,  name:"Kaltim",      kode:"64.71.01.1001" },
-  { id:9,  name:"Aceh",        kode:"11.71.01.1001" },
+  { id:9,  name:"Aceh",        kode:"11.71.01.2001" },
   { id:10, name:"Papua Tgh",   kode:"94.01.01.1001" },
   { id:11, name:"Sumut",       kode:"12.71.01.1001" },
   { id:12, name:"Bengkulu",    kode:"17.71.01.1001" },
