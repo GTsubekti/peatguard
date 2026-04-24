@@ -764,7 +764,7 @@ function CarbonCredit({regions}){
             <div className="clbl">Pilih Lokasi Gambut</div>
             <select className="cinp" value={selectedId||""} onChange={e=>setSelectedId(+e.target.value||null)}>
               <option value="">— Input Manual —</option>
-              {regions.map(r=>(
+              {(regions||[]).map(r=>(
                 <option key={r.id} value={r.id}>{r.name} · {(r.area/10000).toFixed(0)}k ha · {r.status}</option>
               ))}
             </select>
