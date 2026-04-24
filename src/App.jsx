@@ -33,7 +33,7 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 
 /* ─ MAP HERO ─ */
 .hero{position:relative;height:100vh;width:100%;background:${C.bg};overflow:hidden;padding-top:100px;margin-top:0}
-.hero-svg-wrap{width:100%;height:100%;position:relative}
+.hero-svg-wrap{width:100%;height:100%;position:relative;margin-top:0}
 .hero-svg{width:100%;height:100%;display:block}
 .hero-overlay{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, rgba(6,13,9,.5) 100%)}
@@ -53,7 +53,7 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 .map-credit-sub{font-size:13px;color:${C.muted};margin-top:4px}
 
 /* title inside map */
-.map-title{position:absolute;top:70px;left:20px;pointer-events:none}
+.map-title{position:absolute;top:110px;left:20px;pointer-events:none}
 .map-title h1{font-size:clamp(18px,3vw,28px);font-weight:700;line-height:1.2;color:${C.text}}
 .map-title h1 span{color:${C.accent}}
 .map-title p{font-size:11px;color:${C.muted};margin-top:5px;font-family:'Space Mono',monospace;letter-spacing:1px}
@@ -308,7 +308,7 @@ const totalHotspotsReal = hotspots.length;
       </div>
 
       <div className="hero-svg-wrap" ref={svgRef}>
-        <svg className="hero-svg" viewBox="-60 -15 920 400" preserveAspectRatio="xMidYMid slice">
+        <svg className="hero-svg" viewBox="-90 -15 960 400" preserveAspectRatio="xMidYMid slice">
           <defs>
             <radialGradient id="mapbg" cx="50%" cy="50%" r="70%">
               <stop offset="0%" stopColor="#081510"/>
