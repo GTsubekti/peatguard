@@ -53,13 +53,13 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 .map-credit-sub{font-size:13px;color:${C.muted};margin-top:4px}
 
 /* title inside map */
-.map-title{position:absolute;top:115px;left:20px;pointer-events:none;z-index:5}
+.map-title{display:none}
 .map-title h1{font-size:clamp(18px,3vw,28px);font-weight:700;line-height:1.2;color:${C.text}}
 .map-title h1 span{color:${C.accent}}
 .map-title p{font-size:11px;color:${C.muted};margin-top:5px;font-family:'Space Mono',monospace;letter-spacing:1px}
 
 /* map legend */
-.map-legend{position:absolute;top:115px;right:16px;
+.map-legend{position:absolute;top:108px;right:16px;
   background:rgba(6,13,9,.92);border:1px solid ${C.border};border-radius:12px;
   padding:13px 16px;backdrop-filter:blur(10px);pointer-events:none;
   box-shadow:0 4px 24px rgba(0,0,0,.5)}
