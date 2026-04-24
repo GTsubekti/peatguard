@@ -1,8 +1,8 @@
 const REGIONS_BMKG = [
   { id:1,  name:"Riau",        kode:"14.71.04.1001" },
   { id:2,  name:"Kalteng",     kode:"62.71.01.1001" },
-  { id:3,  name:"Kalbar",      kode:"61.71.01.1001" },
-  { id:4,  name:"Papua Barat", kode:"92.01.01.1001" },
+  { id:3,  name:"Kalbar",      kode:"61.71.02.1001" },
+  { id:4,  name:"Papua Barat", kode:"91.71.01.1001" },
   { id:5,  name:"Jambi",       kode:"15.71.01.1001" },
   { id:6,  name:"Sumsel",      kode:"16.71.01.1001" },
   { id:7,  name:"Kalsel",      kode:"63.71.01.1001" },
