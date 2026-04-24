@@ -29,6 +29,7 @@ export default async function handler(req, res) {
             kelembapan: item?.hu ?? null,
             cuaca: item?.weather_desc ?? null,
             angin: item?.ws ?? null,
+            hujan: item?.tp ?? 0,
           };
         } catch {
           return { id: r.id, name: r.name, suhu: null, kelembapan: null, cuaca: null };

@@ -308,7 +308,7 @@ const totalHotspotsReal = hotspots.length;
       </div>
 
       <div className="hero-svg-wrap" ref={svgRef}>
-        <svg className="hero-svg" viewBox="0 0 800 340" preserveAspectRatio="xMidYMid slice">
+        <svg className="hero-svg" viewBox="-30 -15 880 400" preserveAspectRatio="xMidYMid slice">
           <defs>
             <radialGradient id="mapbg" cx="50%" cy="50%" r="70%">
               <stop offset="0%" stopColor="#081510"/>
@@ -461,10 +461,11 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
 
   const lat=hist[hist.length-1];
   const rv=Math.round(lat.risk);
-  const riskReal = cuaca && hotspots.length > 0 ? Math.min(98, Math.round(
-    (Math.max(0, cuaca.suhu - 25) / 15 * 100 * 0.40) +
-    (Math.max(0, 100 - cuaca.kelembapan) * 0.35) +
-    (Math.min(100, hotspots.length / 3) * 0.25)
+  const riskReal = cuaca ? Math.min(98, Math.round(
+    (Math.max(0, cuaca.suhu - 25) / 15 * 100 * 0.35) +
+    (Math.max(0, 100 - cuaca.kelembapan) * 0.30) +
+    (Math.min(100, hotspots.length / 3) * 0.20) +
+    (Math.max(0, 10 - (cuaca.hujan||0)) / 10 * 100 * 0.15)
   )) : null;
   const rvFinal = riskReal !== null ? riskReal : rv;
   const lv=rvFinal<40?"safe":rvFinal<70?"warn":"dang";
@@ -489,6 +490,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
         ["Suhu", cuaca?cuaca.suhu:lat.temp.toFixed(1), "°C", C.warn],
         ["Kelembapan", cuaca?cuaca.kelembapan:Math.round(lat.hum), "%", C.accent2],
         ["Kondisi", cuaca?cuaca.cuaca:"Berawan", "", C.accentDim],
+        ["Curah Hujan", cuaca?cuaca.hujan:Math.round(lat.rain), "mm", C.accent2],
       ].map(([l,v,u,c])=>(
           <div className="sbox" key={l}><div className="slbl">{l}</div>
             <div className="sval" style={{color:c}}>{v}<span className="sunit">{u}</span></div>
@@ -497,7 +499,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
       </div>
       <div style={{fontSize:10,color:C.muted,marginBottom:10,padding:"6px 10px",
         background:C.surface,borderRadius:7,border:`1px solid ${C.border}`}}>
-        📡 Data cuaca riil: <b style={{color:C.text}}>BMKG</b> — Badan Meteorologi, Klimatologi, dan Geofisika · Palangkaraya (Kalteng)
+        📡 Data cuaca riil: <b style={{color:C.text}}>BMKG</b> — Badan Meteorologi, Klimatologi, dan Geofisika · {selectedRegion?selectedRegion.name:"Kalteng"}
       </div>
       <div className="card">
         <div className="ctitle">📈 LSTM Risk Score — Time-Series Forecast</div>
