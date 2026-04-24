@@ -876,7 +876,7 @@ export default function App(){
         (Math.max(0, bmkg.suhu-25)/15*100*0.40)+
         (Math.max(0, 100-bmkg.kelembapan)*0.35)+
         (Math.min(100, hotspots.filter(h=>
-          Math.abs(h.lat-r.lat)<2 && Math.abs(h.lng-r.lng)<2
+          Math.abs(h.lat-(r.lat||0))<2 && Math.abs(h.lng-(r.lng||0))<2
         ).length/3)*0.25)
       ));
       return {...r, risk:riskReal, bmkg};
