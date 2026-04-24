@@ -32,7 +32,7 @@ body{background:${C.bg};color:${C.text};font-family:'Outfit',sans-serif;font-siz
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
 
 /* ─ MAP HERO ─ */
-.hero{position:relative;height:100vh;width:100%;background:${C.bg};overflow:hidden;padding-top:100px}
+.hero{position:relative;height:100vh;width:100%;background:${C.bg};overflow:hidden;padding-top:100px;margin-top:0}
 .hero-svg-wrap{width:100%;height:100%;position:relative}
 .hero-svg{width:100%;height:100%;display:block}
 .hero-overlay{position:absolute;inset:0;pointer-events:none;
@@ -308,7 +308,7 @@ const totalHotspotsReal = hotspots.length;
       </div>
 
       <div className="hero-svg-wrap" ref={svgRef}>
-        <svg className="hero-svg" viewBox="-30 -15 880 400" preserveAspectRatio="xMidYMid slice">
+        <svg className="hero-svg" viewBox="-60 -15 920 400" preserveAspectRatio="xMidYMid slice">
           <defs>
             <radialGradient id="mapbg" cx="50%" cy="50%" r="70%">
               <stop offset="0%" stopColor="#081510"/>
