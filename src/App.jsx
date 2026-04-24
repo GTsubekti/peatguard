@@ -883,10 +883,10 @@ export default function App(){
     }));
   },[cuacaList, hotspots]);
 
-  useInterval(()=>{
+useInterval(()=>{
     setRegions(p=>p.map(r=>({...r,
-      hs:Math.max(0,r.hs+Math.floor(Math.random()*3-1)),
-      risk:Math.max(5,Math.min(98,r.risk+(Math.random()-.48)*2)),
+      hs:Math.max(0,(r.hs||0)+Math.floor(Math.random()*3-1)),
+      risk:Math.max(5,Math.min(98,(r.risk||50)+(Math.random()-.48)*2)),
     })));
   },3000);
 
