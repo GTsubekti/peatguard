@@ -476,8 +476,8 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
             :rvFinal<70?"⚠  Waspada — Kirim notifikasi ke Manggala Agni"
             :"🔴  SIAGA — Aktivasi protokol darurat karhutla!";
   const W=500,H=110;
-  const pts=hist.map((d,i)=>[(i/(hist.length-1))*W,H-(d.risk/100)*H]);
-  const path=pts.map((p,i)=>`${i===0?"M":"L"}${p[0]},${p[1]}`).join(" ");
+  const pts=hist.length>1?hist.map((d,i)=>[(i/(hist.length-1))*W,H-(d.risk/100)*H]):[];
+  const path=pts.length>0?pts.map((p,i)=>`${i===0?"M":"L"}${p[0]},${p[1]}`).join(" "):"M0,"+H;
   const area=path+` L${W},${H} L0,${H} Z`;
   const col=rc(rvFinal);
 
@@ -531,7 +531,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
           <line x1="0" y1={H*.6} x2={W} y2={H*.6} stroke={C.warn} strokeWidth="1" strokeDasharray="4,4" opacity=".35"/>
           <path d={area} fill="url(#rg)"/>
           <path d={path} fill="none" stroke={col} strokeWidth="2"/>
-          <circle cx={pts[pts.length-1][0]} cy={pts[pts.length-1][1]} r="4" fill={col}/>
+          {pts.length>0 && <circle cx={pts[pts.length-1][0]} cy={pts[pts.length-1][1]} r="4" fill={col}/>}
         </svg>
         <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:C.muted,marginTop:3}}>
           <span>−24 jam</span><span>Sekarang</span>
