@@ -441,22 +441,25 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
   const cuaca = selectedRegion
     ? cuacaList.find(c=>c.id===selectedRegion.id)
     : cuacaList.find(c=>c.id===2); // default Kalteng
-  const [hist,setHist]=useState(()=>Array.from({length:24},(_,i)=>({
-    h:i,rain:60+Math.sin(i*.4)*40+Math.random()*20,
-    temp:32+Math.sin(i*.3)*5,hum:55+Math.cos(i*.35)*20,
-    risk:20+i*1.8+Math.random()*15,
-  })));
+  const [hist,setHist]=useState([]);
   const [run,setRun]=useState(true);
 
-  useInterval(()=>{
-    if(!run)return;
-    setHist(h=>{
-      const l=h[h.length-1];
-      const nr=Math.max(5,Math.min(98,l.risk+(Math.random()-.45)*12));
-      return[...h.slice(-23),{h:l.h+1,rain:Math.max(0,l.rain+(Math.random()-.5)*25),
-        temp:32+Math.sin(l.h*.3)*5+(Math.random()-.5),
-        hum:Math.max(20,Math.min(95,l.hum+(Math.random()-.5)*8)),risk:nr}];
+  // build hist dari forecast BMKG
+  useEffect(()=>{
+    if(!cuaca?.forecast?.length) return;
+    const pts = cuaca.forecast.slice(0,24).map((d,i)=>{
+      const riskPt = Math.min(98, Math.round(
+        (Math.max(0, d.suhu-25)/15*100*0.35)+
+        (Math.max(0, 100-d.kelembapan)*0.30)+
+        (Math.max(0, 10-(d.hujan||0))/10*100*0.15)
+      ));
+      return {h:i, temp:d.suhu, hum:d.kelembapan, rain:d.hujan*10, risk:riskPt, time:d.time};
     });
+    setHist(pts);
+  },[cuaca]);
+
+  useInterval(()=>{
+    if(!run||!cuaca?.forecast?.length) return;
   },1500);
 
   const lat=hist[hist.length-1];
@@ -485,7 +488,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
         📍 Lokasi: <span style={{color:C.accent}}>{selectedRegion?selectedRegion.name:"Kalteng"}</span>
         {cuaca && <span style={{fontSize:11,color:C.muted,marginLeft:8}}>· {cuaca.cuaca}</span>}
       </div>
-      <div className="g3">
+      <div className="g2">
         {[
         ["Suhu", cuaca?cuaca.suhu:lat.temp.toFixed(1), "°C", C.warn],
         ["Kelembapan", cuaca?cuaca.kelembapan:Math.round(lat.hum), "%", C.accent2],
@@ -732,11 +735,21 @@ function CompVision(){
 }
 
 /* ── TAB: CARBON CREDIT ──────────────────────────────────── */
-function CarbonCredit(){
+function CarbonCredit({regions}){
   const [area,setArea]=useState(10000);
   const [depth,setDepth]=useState(2);
   const [status,setStatus]=useState("degraded");
   const [price,setPrice]=useState(25);
+  const [selectedId,setSelectedId]=useState(null);
+
+  // auto-update area dan status dari region yang dipilih
+  useEffect(()=>{
+    if(!selectedId) return;
+    const r = regions.find(x=>x.id===selectedId);
+    if(!r) return;
+    setArea(r.area);
+    setStatus(r.status);
+  },[selectedId, regions]);
   const stored=area*CDENSITY[depth];
   const emission=area*ERATE[status];
   const credits=emission*.7;
@@ -747,6 +760,15 @@ function CarbonCredit(){
       <div className="g2">
         <div className="card">
           <div className="ctitle">💰 Carbon Credit Calculator</div>
+          <div className="cf">
+            <div className="clbl">Pilih Lokasi Gambut</div>
+            <select className="cinp" value={selectedId||""} onChange={e=>setSelectedId(+e.target.value||null)}>
+              <option value="">— Input Manual —</option>
+              {regions.map(r=>(
+                <option key={r.id} value={r.id}>{r.name} · {(r.area/10000).toFixed(0)}k ha · {r.status}</option>
+              ))}
+            </select>
+          </div>
           {[
             {lbl:"Luas Lahan Gambut (ha)",type:"number",val:area,set:setArea},
           ].map(f=>(
@@ -904,7 +926,7 @@ export default function App(){
         {tab==="warn" && <EarlyWarning selectedRegion={selectedRegion} cuacaList={cuacaList} hotspots={hotspots}/>}
         {tab==="water"  && <WaterMgmt/>}
         {tab==="vision" && <CompVision/>}
-        {tab==="carbon" && <CarbonCredit/>}
+        {tab==="carbon" && <CarbonCredit regions={regions}/>}
       </section>
     </>
   );
