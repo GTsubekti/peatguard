@@ -834,6 +834,13 @@ const TABS = [
 export default function App(){
   const [tab,setTab]=useState("warn");
   const [regions,setRegions]=useState(REGIONS.map(r=>({...r})));
+  const hotspots = useHotspots();
+  const geo = useGeoJSON();
+  const cuacaList = useBMKG();
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  const totalHotspotsReal = hotspots.length;
+  const [popup,setPopup]=useState(null);
+  const svgRef=useRef();
 
   // update risk score tiap region dari data BMKG riil
   useEffect(()=>{
@@ -851,13 +858,6 @@ export default function App(){
       return {...r, risk:riskReal, bmkg};
     }));
   },[cuacaList, hotspots]);
-  const hotspots = useHotspots();
-  const geo = useGeoJSON();
-  const cuacaList = useBMKG();
-  const [selectedRegion, setSelectedRegion] = useState(null);
-  const totalHotspotsReal = hotspots.length;
-  const [popup,setPopup]=useState(null);
-  const svgRef=useRef();
 
   useInterval(()=>{
     setRegions(p=>p.map(r=>({...r,
