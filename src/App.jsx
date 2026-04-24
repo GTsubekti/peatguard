@@ -226,23 +226,16 @@ function useHotspots() {
   return hotspots;
 }
 function useBMKG() {
-  const [cuaca, setCuaca] = useState(null);
+  const [cuacaList, setCuacaList] = useState([]);
   useEffect(() => {
     fetch('/api/bmkg')
       .then(r => r.json())
       .then(data => {
-        const item = data.data?.[0]?.cuaca?.[0]?.[0];
-        if (item) setCuaca({
-          suhu: item.t,
-          kelembapan: item.hu,
-          cuaca: item.weather_desc,
-          angin: item.ws,
-          waktu: item.local_datetime,
-        });
+        if (Array.isArray(data)) setCuacaList(data);
       })
       .catch(e => console.error("BMKG error:", e));
   }, []);
-  return cuaca;
+  return cuacaList;
 }
 function useGeoJSON() {
   const [geo, setGeo] = useState(null);
@@ -295,7 +288,7 @@ const PATHS = [
 ];
 
 /* ── MAP HERO COMPONENT ──────────────────────────────────── */
-function MapHero({regions, hotspots, geo, onHover, popup, svgRef}){
+function MapHero({regions, hotspots, geo, selectedRegion, onHover, onSelect, popup, svgRef}){
   const totalHs = regions.reduce((s,r)=>s+r.hs,0);
 const totalHotspotsReal = hotspots.length;
   return(
@@ -372,7 +365,7 @@ const totalHotspotsReal = hotspots.length;
               <g key={r.id} style={{cursor:"pointer"}}
                 onMouseEnter={()=>onHover(r)}
                 onMouseLeave={()=>onHover(null)}
-                onClick={()=>onHover(r)}>
+                onClick={()=>{onHover(r);onSelect(r);}}>
                 {/* pulse ring */}
                 <circle cx={r.mx} cy={r.my} r={sz+6} fill={col} opacity=".08">
                   <animate attributeName="r" values={`${sz+3};${sz+10};${sz+3}`} dur="2.5s" repeatCount="indefinite"/>
@@ -421,7 +414,7 @@ const totalHotspotsReal = hotspots.length;
         <div className="map-stats-row">
           {[
             {val:"24.7", unit:"jt ha", lbl:"Total Gambut", color:C.accent2},
-            {val:totalHotspotsReal||totalHs, unit:"", lbl:"Hotspot Aktif", color:C.danger},
+            {val:hotspots.length, unit:"", lbl:"Hotspot Aktif", color:C.danger},
             {val:"9.8",  unit:"jt ha", lbl:"Terdegradasi", color:C.warn},
             {val:"12",   unit:"titik", lbl:"Lokasi Pantau", color:C.accent},
           ].map((s,i,arr)=>(
@@ -444,9 +437,10 @@ const totalHotspotsReal = hotspots.length;
 }
 
 /* ── TAB: EARLY WARNING ───────────────────────────────────── */
-function EarlyWarning(){
-  const cuaca = useBMKG();
-  const hotspots = useHotspots();
+function EarlyWarning({selectedRegion, cuacaList, hotspots}){
+  const cuaca = selectedRegion
+    ? cuacaList.find(c=>c.id===selectedRegion.id)
+    : cuacaList.find(c=>c.id===2); // default Kalteng
   const [hist,setHist]=useState(()=>Array.from({length:24},(_,i)=>({
     h:i,rain:60+Math.sin(i*.4)*40+Math.random()*20,
     temp:32+Math.sin(i*.3)*5,hum:55+Math.cos(i*.35)*20,
@@ -485,6 +479,11 @@ function EarlyWarning(){
 
   return(
     <div className="content fade">
+      <div style={{fontSize:13,fontWeight:600,color:C.text,marginBottom:10,
+        padding:"8px 12px",background:C.surface,borderRadius:8,border:`1px solid ${C.border}`}}>
+        📍 Lokasi: <span style={{color:C.accent}}>{selectedRegion?selectedRegion.name:"Kalteng"}</span>
+        {cuaca && <span style={{fontSize:11,color:C.muted,marginLeft:8}}>· {cuaca.cuaca}</span>}
+      </div>
       <div className="g3">
         {[
         ["Suhu", cuaca?cuaca.suhu:lat.temp.toFixed(1), "°C", C.warn],
@@ -835,8 +834,27 @@ const TABS = [
 export default function App(){
   const [tab,setTab]=useState("warn");
   const [regions,setRegions]=useState(REGIONS.map(r=>({...r})));
+
+  // update risk score tiap region dari data BMKG riil
+  useEffect(()=>{
+    if(cuacaList.length===0) return;
+    setRegions(prev=>prev.map(r=>{
+      const bmkg = cuacaList.find(c=>c.id===r.id);
+      if(!bmkg||!bmkg.suhu) return r;
+      const riskReal = Math.min(98, Math.round(
+        (Math.max(0, bmkg.suhu-25)/15*100*0.40)+
+        (Math.max(0, 100-bmkg.kelembapan)*0.35)+
+        (Math.min(100, hotspots.filter(h=>
+          Math.abs(h.lat-r.lat)<2 && Math.abs(h.lng-r.lng)<2
+        ).length/3)*0.25)
+      ));
+      return {...r, risk:riskReal, bmkg};
+    }));
+  },[cuacaList, hotspots]);
   const hotspots = useHotspots();
   const geo = useGeoJSON();
+  const cuacaList = useBMKG();
+  const [selectedRegion, setSelectedRegion] = useState(null);
   const totalHotspotsReal = hotspots.length;
   const [popup,setPopup]=useState(null);
   const svgRef=useRef();
@@ -865,7 +883,9 @@ export default function App(){
         regions={regions}
         hotspots={hotspots}
         geo={geo}
+        selectedRegion={selectedRegion}
         onHover={r=>setPopup(r?{r}:null)}
+        onSelect={r=>setSelectedRegion(r)}
         popup={popup}
         svgRef={svgRef}
       />
@@ -879,7 +899,7 @@ export default function App(){
             </button>
           ))}
         </nav>
-        {tab==="warn"   && <EarlyWarning/>}
+        {tab==="warn" && <EarlyWarning selectedRegion={selectedRegion} cuacaList={cuacaList} hotspots={hotspots}/>}
         {tab==="water"  && <WaterMgmt/>}
         {tab==="vision" && <CompVision/>}
         {tab==="carbon" && <CarbonCredit/>}
