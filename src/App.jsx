@@ -462,7 +462,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
     if(!run||!cuaca?.forecast?.length) return;
   },1500);
 
-  const lat=hist[hist.length-1];
+  const lat=hist[hist.length-1]||{risk:50,temp:30,hum:70,rain:0};
   const rv=Math.round(lat.risk);
   const riskReal = cuaca ? Math.min(98, Math.round(
     (Math.max(0, cuaca.suhu - 25) / 15 * 100 * 0.35) +
