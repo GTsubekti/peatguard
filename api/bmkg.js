@@ -21,7 +21,15 @@ export default async function handler(req, res) {
           const url = `https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=${r.kode}`;
           const response = await fetch(url);
           const data = await response.json();
-          const item = data.data?.[0]?.cuaca?.[0]?.[0];
+          const cuacaData = data.data?.[0]?.cuaca ?? [];
+          const item = cuacaData?.[0]?.[0];
+          // ambil semua data per jam dari 3 hari
+          const forecast = cuacaData.flat().map(d => ({
+            time: d.local_datetime,
+            suhu: d.t,
+            kelembapan: d.hu,
+            hujan: d.tp ?? 0,
+          }));
           return {
             id: r.id,
             name: r.name,
@@ -30,6 +38,7 @@ export default async function handler(req, res) {
             cuaca: item?.weather_desc ?? null,
             angin: item?.ws ?? null,
             hujan: item?.tp ?? 0,
+            forecast,
           };
         } catch {
           return { id: r.id, name: r.name, suhu: null, kelembapan: null, cuaca: null };
