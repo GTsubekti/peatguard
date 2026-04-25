@@ -875,7 +875,10 @@ export default function App(){
           Math.abs(h.lat-(r.lat||0))<2 && Math.abs(h.lng-(r.lng||0))<2
         ).length/3)*0.25)
       ));
-      return {...r, risk:riskReal, bmkg};
+      const regionalHs = hotspots.filter(h=>
+        Math.abs(h.lat-(r.lat||0))<2 && Math.abs(h.lng-(r.lng||0))<2
+      ).length;
+      return {...r, risk:riskReal, bmkg, hs:regionalHs};
     }));
   },[cuacaList, hotspots]);
 
