@@ -403,9 +403,6 @@ const totalHotspotsReal = hotspots.length;
           <div className="popup-row"><span>Skor Risiko LSTM</span><span>{Math.round(popup.r.risk)}%</span></div>
           <div className="popup-row"><span>Hotspot Aktif</span><span>{popup.r.hs}</span></div>
           <div className="popup-row"><span>Status Lahan</span><span>{popup.r.status}</span></div>
-          <div className="popup-row"><span>Carbon Credit/thn</span>
-            <span>${Math.round(popup.r.area*ERATE[popup.r.status]*.7*25).toLocaleString()}</span>
-          </div>
         </div>
       )}
 
@@ -503,6 +500,8 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
       <div style={{fontSize:10,color:C.muted,marginBottom:10,padding:"6px 10px",
         background:C.surface,borderRadius:7,border:`1px solid ${C.border}`}}>
         📡 Data cuaca riil: <b style={{color:C.text}}>BMKG</b> — Badan Meteorologi, Klimatologi, dan Geofisika · {selectedRegion?selectedRegion.name:"Kalteng"}
+        <br/>
+        🛰 Data hotspot riil: <b style={{color:C.text}}>NASA FIRMS</b> — Fire Information for Resource Management System · VIIRS SNPP NRT
       </div>
       <div className="card">
         <div className="ctitle">📈 Multi-Parameter Risk Index — BMKG DAN NASA FIRMS</div>
