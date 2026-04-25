@@ -512,7 +512,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
             <div style={{fontFamily:"'Space Mono',monospace",fontSize:36,fontWeight:700,color:col}}>{rvFinal}%</div>
           </div>
           <div style={{flex:1}}>
-            {[["Suhu",lat.temp/40*100],["Kelembapan",lat.hum],["Curah Hujan",lat.rain/150*100]].map(([l,v])=>(
+            {[["Suhu",(cuaca?cuaca.suhu:lat.temp)/40*100],["Kelembapan",cuaca?cuaca.kelembapan:lat.hum],["Curah Hujan",(cuaca?cuaca.hujan:lat.rain)/150*100]].map(([l,v])=>(
               <div className="brow" key={l}>
                 <div className="blbl"><span>{l}</span><span>{Math.round(v)}%</span></div>
                 <div className="bbg"><div className="bfill" style={{width:`${Math.min(100,v)}%`,background:rc(v)}}/></div>
