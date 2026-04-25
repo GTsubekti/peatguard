@@ -604,7 +604,7 @@ function WaterMgmt(){
         </div>
       </div>
       <div className="card">
-        <div className="ctitle">💧 Smart Canal Blocking — Reinforcement Learning Agent</div>
+        <div className="ctitle">💧 Smart Canal Blocking — Proposed System · Reinforcement Learning</div>
         <div className="g4">
           {canals.map(c=>{
             const pct=Math.min(100,(c.tmat/80)*100);
@@ -624,13 +624,17 @@ function WaterMgmt(){
             );
           })}
         </div>
+        <div style={{fontSize:10,color:C.warn,padding:"5px 10px",
+          background:"#2e1f00",borderRadius:6,border:"1px solid #7a4e00",marginBottom:8}}>
+          ⚠ Simulasi arsitektur yang diusulkan. Implementasi nyata membutuhkan sensor TMAT fisik + gateway LoRaWAN di lapangan.
+        </div>
         <div style={{fontSize:10,color:C.muted}}><span style={{color:C.warn}}>— Garis kuning:</span> target TMAT 40 cm (regulasi BRGM)</div>
         <div className="btn-row">
           <button className={`btn${run?"":" on"}`} onClick={()=>setRun(r=>!r)}>{run?"⏸ Pause RL":"▶ Start RL"}</button>
         </div>
       </div>
       <div className="card">
-        <div className="ctitle">🤖 RL Decision Log</div>
+        <div className="ctitle">🤖 RL Decision Log — Simulasi Arsitektur</div>
         <div style={{fontFamily:"'Space Mono',monospace",fontSize:11}}>
           {log.length===0
             ?<div className="pulse" style={{color:C.muted}}>Menunggu keputusan RL...</div>
@@ -641,9 +645,12 @@ function WaterMgmt(){
             ))}
         </div>
         <div className="info-strip" style={{marginTop:12}}>
-          📡 <b style={{color:C.text}}>LoRaWAN</b> — 15 km, tanpa 4G &nbsp;·&nbsp;
-          🖥 <b style={{color:C.text}}>Edge AI</b> — on-device, tanpa cloud &nbsp;·&nbsp;
-          🔀 <b style={{color:C.text}}>Sensor Fusion</b> — soil + satelit + MPA
+          📡 <b style={{color:C.text}}>LoRaWAN</b> — jangkauan 15 km, hemat baterai, tanpa 4G<br/>
+          🖥 <b style={{color:C.text}}>Edge AI</b> — inferencing on-device, tidak bergantung cloud<br/>
+          🔀 <b style={{color:C.text}}>Sensor Fusion</b> — soil sensor + data satelit + laporan MPA<br/>
+          <span style={{color:C.muted,fontSize:10,marginTop:4,display:"block"}}>
+            Arsitektur diusulkan berdasarkan BRGM (2023) — Panduan Teknis Pembasahan Gambut
+          </span>
         </div>
       </div>
     </div>
