@@ -505,7 +505,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
         📡 Data cuaca riil: <b style={{color:C.text}}>BMKG</b> — Badan Meteorologi, Klimatologi, dan Geofisika · {selectedRegion?selectedRegion.name:"Kalteng"}
       </div>
       <div className="card">
-        <div className="ctitle">📈 LSTM Risk Score — Time-Series Forecast</div>
+        <div className="ctitle">📈 Multi-Parameter Risk Index — BMKG DAN NASA FIRMS</div>
         <div style={{display:"flex",alignItems:"center",gap:18,marginBottom:12}}>
           <div>
             <div style={{fontSize:11,color:C.muted}}>Skor Risiko</div>
@@ -537,26 +537,22 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
           <span>−24 jam</span><span>Sekarang</span>
         </div>
         <div className={`abox ${lv}`}>{msg}</div>
-        <div className="btn-row">
-          <button className={`btn${run?"":" on"}`} onClick={()=>setRun(r=>!r)}>{run?"⏸ Pause":"▶ Resume"}</button>
-          <span style={{fontSize:10,color:C.muted}}>Model: LSTM · Window 24 jam</span>
+        <div style={{fontSize:10,color:C.muted,marginTop:8}}>
+          Indeks risiko dihitung dari suhu, kelembapan, curah hujan (BMKG) dan hotspot aktif (NASA FIRMS)
         </div>
       </div>
       <div className="card">
-        <div className="ctitle">📋 Log Aktivitas</div>
+        <div className="ctitle">📡 Sumber Data</div>
         <div className="tl">
-          {[{c:C.accent,t:"Baru saja",m:`Prediksi diperbarui → Risiko ${rvFinal}%`},
-            {c:rv>70?C.warn:C.muted,t:"2 mnt lalu",m:"Sensor TMAT KHG-Kalteng diterima"},
-            {c:C.muted,t:"8 mnt lalu",m:"Data cuaca BMKG disinkronkan"},
-            {c:C.muted,t:"15 mnt lalu",m:"Sensor fusion — 3 sumber diverifikasi"},
-            {c:C.accent,t:"1 jam lalu",m:"Model LSTM retrain data terbaru"},
+          {[
+            {c:C.accent,  m:`NASA FIRMS VIIRS — ${hotspots.length} hotspot aktif terdeteksi`},
+            {c:C.accent2, m:`BMKG — Prakiraan cuaca ${selectedRegion?selectedRegion.name:"Kalteng"} (update tiap 3 jam)`},
+            {c:C.muted,   m:"Formula: 35% Suhu · 30% Kelembapan · 20% Hotspot · 15% Curah Hujan"},
+            {c:C.muted,   m:"Threshold: <40% Aman · 40-70% Waspada · >70% Siaga"},
           ].map((x,i)=>(
             <div className="tli" key={i}>
               <div className="tldot" style={{background:x.c}}/>
-              <div>
-                <div style={{fontSize:11}}>{x.m}</div>
-                <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,color:C.muted}}>{x.t}</div>
-              </div>
+              <div style={{fontSize:11}}>{x.m}</div>
             </div>
           ))}
         </div>
