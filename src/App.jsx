@@ -537,7 +537,7 @@ function EarlyWarning({selectedRegion, cuacaList, hotspots}){
           <span>−24 jam</span><span>Sekarang</span>
         </div>
         <div className={`abox ${lv}`}>{msg}</div>
-        <div style={{fontSize:10,color:C.muted,marginTop:8}}>
+        <div style={{fontSize:13,color:C.text,marginTop:8,fontWeight:500}}>
           Indeks risiko dihitung dari suhu, kelembapan, curah hujan (BMKG) dan hotspot aktif (NASA FIRMS)
         </div>
       </div>
@@ -667,7 +667,7 @@ function CompVision(){
   return(
     <div className="content fade">
       <div className="card">
-        <div className="ctitle">🛰 CNN Semantic Segmentation — Citra Satelit Gambut</div>
+        <div className="ctitle">🛰 CNN Semantic Segmentation — Proposed System · Referensi GFW & BRG</div>
         <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
           {["raw","segmented"].map(m=>(
             <button key={m} className={`btn${mode===m?" on":""}`} style={{padding:"6px 14px"}} onClick={()=>setMode(m)}>
@@ -675,7 +675,7 @@ function CompVision(){
             </button>
           ))}
           <button className="btn" onClick={runScan} disabled={scanning} style={{marginLeft:"auto"}}>
-            {scanning?<span className="pulse">⟳ Scanning…</span>:"▶ Jalankan CNN"}
+            {scanning?<span className="pulse">⟳ Mensimulasikan…</span>:"▶ Simulasi CNN Output"}
           </button>
         </div>
         <div style={{position:"relative"}}>
@@ -687,6 +687,10 @@ function CompVision(){
             })}
           </div>
           {scanning&&<div style={{position:"absolute",top:`${(scanLine/10)*100}%`,left:0,right:0,height:"3px",background:C.accent,boxShadow:`0 0 10px ${C.accent}`,transition:"top .12s"}}/>}
+        </div>
+        <div style={{fontSize:10,color:C.warn,marginTop:6,padding:"5px 10px",
+          background:"#2e1f00",borderRadius:6,border:"1px solid #7a4e00"}}>
+          ⚠ Visualisasi ini adalah simulasi output CNN. Data referensi: Global Forest Watch (GFW) · Peta KHG BRG Indonesia
         </div>
         <div style={{display:"flex",gap:12,flexWrap:"wrap",marginTop:8}}>
           {Object.entries(SEG).map(([k,v])=>(
@@ -716,9 +720,12 @@ function CompVision(){
           <div style={{fontSize:11,color:C.muted,lineHeight:1.9}}>
             <div><span style={{color:C.text}}>Arsitektur</span>: U-Net CNN</div>
             <div><span style={{color:C.text}}>Input</span>: Sentinel-2 10m/px</div>
-            <div><span style={{color:C.text}}>Akurasi</span>: <span style={{color:C.accent,fontWeight:700}}>94.7%</span>/pixel</div>
+            <div><span style={{color:C.text}}>Target Akurasi</span>: <span style={{color:C.accent,fontWeight:700}}>94.7%</span>/pixel *</div>
             <div><span style={{color:C.text}}>Update</span>: Tiap 3 hari</div>
             <div><span style={{color:C.text}}>Training</span>: 12.000 tile gambut</div>
+            <div style={{fontSize:9,color:C.muted,marginTop:8,lineHeight:1.6}}>
+              * Target akurasi berdasarkan Roteksa et al. (2021) — U-Net untuk segmentasi lahan gambut tropis. Implementasi mandiri dalam pengembangan.
+            </div>
           </div>
           <div style={{marginTop:10,padding:"9px 12px",background:C.surface,borderRadius:8,fontSize:11,color:C.muted,border:`1px solid ${C.border}`}}>
             🌿 Sehat: <b style={{color:C.accent}}>{((counts.healthy||0)/total*100).toFixed(0)}%</b>
